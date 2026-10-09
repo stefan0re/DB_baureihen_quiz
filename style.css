@@ -1,0 +1,306 @@
+:root {
+  --bg: #f4f1ec;
+  --surface: #ffffff;
+  --surface-2: #ebe7e0;
+  --text: #1d1d1f;
+  --muted: #6b6b70;
+  --border: rgba(0, 0, 0, 0.08);
+  --accent: #c8102e;
+  --accent-press: #a00c24;
+  --accent-text: #ffffff;
+  --ok: #1f8a4c;
+  --bad: #c8102e;
+  --shadow: 0 1px 2px rgba(0, 0, 0, 0.06), 0 8px 24px rgba(0, 0, 0, 0.08);
+  --radius: 18px;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #16171a;
+    --surface: #222429;
+    --surface-2: #1b1c20;
+    --text: #f2f2f4;
+    --muted: #9a9aa2;
+    --border: rgba(255, 255, 255, 0.08);
+    --accent: #e8304b;
+    --accent-press: #c8102e;
+    --ok: #3ccf7a;
+    --bad: #ff5c6f;
+    --shadow: 0 1px 2px rgba(0, 0, 0, 0.4), 0 8px 24px rgba(0, 0, 0, 0.35);
+  }
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  -webkit-text-size-adjust: 100%;
+  -webkit-tap-highlight-color: transparent;
+}
+
+[hidden] { display: none !important; }
+
+.app {
+  max-width: 640px;
+  margin: 0 auto;
+  min-height: 100vh;
+  min-height: 100dvh;
+  padding:
+    max(16px, env(safe-area-inset-top))
+    max(16px, env(safe-area-inset-right))
+    max(16px, env(safe-area-inset-bottom))
+    max(16px, env(safe-area-inset-left));
+  display: flex;
+  flex-direction: column;
+}
+
+.screen {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.screen-center {
+  align-items: center;
+  text-align: center;
+}
+
+.spacer { flex: 1; }
+
+h1 {
+  margin: 4px 0 0;
+  font-size: 2.2rem;
+  letter-spacing: -0.02em;
+}
+
+.muted { color: var(--muted); margin: 0; }
+
+/* ---------- Buttons ---------- */
+
+.btn {
+  appearance: none;
+  border: 0;
+  border-radius: 14px;
+  background: var(--accent);
+  color: var(--accent-text);
+  font: inherit;
+  font-size: 1.2rem;
+  font-weight: 600;
+  padding: 14px 40px;
+  min-height: 52px;
+  cursor: pointer;
+  touch-action: manipulation;
+  transition: background-color 0.15s, transform 0.1s, opacity 0.15s;
+}
+.btn:hover { background: var(--accent-press); }
+.btn:active { transform: scale(0.97); }
+.btn:disabled { opacity: 0.4; cursor: default; transform: none; background: var(--accent); }
+.btn:focus-visible { outline: 3px solid var(--text); outline-offset: 2px; }
+
+.link-btn {
+  appearance: none;
+  border: 0;
+  background: none;
+  color: var(--muted);
+  font: inherit;
+  text-decoration: underline;
+  padding: 8px;
+  cursor: pointer;
+}
+
+/* ---------- Start ---------- */
+
+.start-image {
+  width: auto;
+  max-width: 100%;
+  height: 46dvh;
+  object-fit: contain;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  margin-top: 12px;
+}
+
+#start .btn, #finish .btn { margin-bottom: 8px; min-width: 220px; }
+
+/* ---------- Quiz ---------- */
+
+.topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  font-weight: 600;
+}
+.brand { font-size: 1.05rem; flex: 1; }
+.progress-text { flex: 1; text-align: right; }
+
+.lives { display: flex; gap: 4px; font-size: 1.25rem; line-height: 1; }
+.lives span { display: inline-block; transition: opacity 0.3s, filter 0.3s; }
+.lives span.lost { opacity: 0.25; filter: grayscale(1); }
+.lives span.pop { animation: pop 0.5s; }
+
+@keyframes pop {
+  0% { transform: scale(1); }
+  40% { transform: scale(1.6) rotate(-12deg); }
+  100% { transform: scale(1); }
+}
+.progress-text { color: var(--muted); font-variant-numeric: tabular-nums; }
+
+.progress {
+  height: 4px;
+  background: var(--surface-2);
+  border-radius: 2px;
+  overflow: hidden;
+  margin-top: -6px;
+}
+.progress-bar {
+  height: 100%;
+  width: 0;
+  background: var(--accent);
+  transition: width 0.4s ease;
+}
+
+/* Flip card: both faces share one grid cell, so the card is as tall as the larger face. */
+.card { perspective: 1400px; }
+
+.card-inner {
+  display: grid;
+  transform-style: preserve-3d;
+  transition: transform 0.7s cubic-bezier(0.2, 0.8, 0.25, 1.15);
+}
+.card-inner.flipped { transform: rotateY(180deg); }
+.card-inner.no-anim, .card-inner.no-anim .face { transition: none; }
+
+.face {
+  grid-area: 1 / 1;
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  /* Safari zeichnet die Rückseite sonst trotz backface-visibility über die Vorderseite:
+     daher zusätzlich die Sichtbarkeit genau zur Hälfte der Drehung umschalten. */
+  transition: visibility 0s linear 0.3s;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+}
+
+.back { visibility: hidden; }
+.flipped .back { visibility: visible; }
+.flipped .front { visibility: hidden; }
+
+.back {
+  transform: rotateY(180deg);
+  padding: 22px 20px;
+  justify-content: center;
+  text-align: center;
+}
+.back h2 { margin: 0 0 10px; font-size: 1.6rem; }
+.back-text p { margin: 0 0 0.6em; line-height: 1.45; }
+.back-text p:last-child { margin-bottom: 0; }
+
+.photo {
+  height: min(48dvh, 460px);
+  min-height: 200px;
+  border-radius: 12px;
+  background: var(--surface-2);
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+}
+
+.question {
+  margin: 12px 0 2px;
+  text-align: center;
+  font-weight: 600;
+}
+
+.feedback {
+  min-height: 1.4em;
+  margin: 0;
+  text-align: center;
+  font-weight: 600;
+}
+.feedback.ok { color: var(--ok); }
+.feedback.bad { color: var(--bad); }
+
+.answer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  margin-top: auto;
+  padding-bottom: 4px;
+}
+
+.answer-input {
+  width: 100%;
+  max-width: 320px;
+  font: inherit;
+  font-size: 2rem; /* >= 16px verhindert Auto-Zoom auf iOS */
+  font-weight: 600;
+  text-align: center;
+  letter-spacing: 0.12em;
+  font-variant-numeric: tabular-nums;
+  padding: 10px 14px;
+  border-radius: 14px;
+  border: 2px solid var(--border);
+  background: var(--surface);
+  color: var(--text);
+  outline: none;
+  transition: border-color 0.15s;
+}
+.answer-input::placeholder { color: var(--muted); letter-spacing: normal; font-weight: 400; opacity: 0.7; }
+.answer-input:focus { border-color: var(--accent); }
+.answer-input:disabled { opacity: 1; -webkit-text-fill-color: var(--ok); border-color: var(--ok); }
+.answer-input.wrong:disabled { -webkit-text-fill-color: var(--bad); border-color: var(--bad); }
+.answer-input.shake { animation: shake 0.4s; border-color: var(--bad); }
+
+.answer .btn { width: 100%; max-width: 320px; }
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  20%, 60% { transform: translateX(-8px); }
+  40%, 80% { transform: translateX(8px); }
+}
+
+/* ---------- Ende ---------- */
+
+.check { width: 110px; height: 110px; }
+.check circle { fill: var(--ok); }
+
+/* ---------- Helfer ---------- */
+
+.visually-hidden {
+  position: absolute;
+  width: 1px; height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .card-inner, .progress-bar { transition: none; }
+  .answer-input.shake, .lives span.pop { animation: none; }
+}
+
+/* Kleine/niedrige Bildschirme (z. B. Handy quer) */
+@media (max-height: 560px) {
+  .photo { height: 42dvh; min-height: 150px; }
+  .start-image { height: 40dvh; }
+  h1 { font-size: 1.7rem; }
+}
+
+.nowrap { white-space: nowrap; }
