@@ -1,7 +1,7 @@
 // Service Worker: macht das Quiz offline verfügbar.
 // Strategie "Netz zuerst": Online gibt es immer die neueste Version,
 // offline wird die zuletzt geladene Version aus dem Cache genommen.
-const CACHE = "zugquiz-v2";
+const CACHE = "zugquiz-v3";
 
 const FILES = [
   "./",
@@ -32,6 +32,31 @@ const FILES = [
   "images/015_223.webp",
   "images/016_146.webp",
   "images/017_641.webp",
+  "images/018_185.webp",
+  "images/019_648.webp",
+  "images/020_612.webp",
+  "images/021_642.webp",
+  "images/022_648.webp",
+  "images/023_189.webp",
+  "images/024_192.webp",
+  "images/025_430.webp",
+  "images/025_462.webp",
+  "images/026_401.webp",
+  "images/027_182.webp",
+  "images/028_159.webp",
+  "images/029_146.webp",
+  "images/030_280.webp",
+  "images/031_114.webp",
+  "images/032_143.webp",
+  "images/033_159.webp",
+  "images/034_185.webp",
+  "images/035_185.webp",
+  "images/036_101.webp",
+  "images/037_384.webp",
+  "images/038_243.webp",
+  "images/039_193.webp",
+  "images/040_463.webp",
+  "images/041_146.webp",
 ];
 
 self.addEventListener("install", (event) => {
